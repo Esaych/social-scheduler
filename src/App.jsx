@@ -241,7 +241,7 @@ const useCalendar = (url) => {
   const [cal, setCal] = useState();
 
   useEffect(() => {
-    fetch("https://corsproxy.io/?" + url)
+    fetch("https://corsproxy.io/?url=" + url)
       .then((resp) => {
         if (resp.ok) {
           resp.text().then((text) => setCal({ data: ical.parseICS(text) }));
