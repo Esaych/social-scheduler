@@ -39,15 +39,15 @@ jobs:
         run: npm install
       - name: Build
         run: npm run build
-      - name: List contents of dist directory  # Debug step
-        run: ls -R ./dist  # This lists all files under dist
+      - name: List contents of dist directory (for upload)
+        run: find ./dist  # List all files under the dist directory
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: social-scheduler
-          path: "./dist/**"  # Ensure this is the correct path
+          path: "./dist/**/*"  # Ensure this is the correct path
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
