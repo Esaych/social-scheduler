@@ -40,12 +40,9 @@ jobs:
       - name: Build the project
         run: npm run build
 
-      # List hard links and symlinks (if any) in dist to troubleshoot deployment issues
-      - name: List hard links and symlinks in dist directory
-        run: |
-          echo "Listing hard links and symlinks in ./dist"
-          find ./dist -type l  # Find symlinks
-          find ./dist -type f -links +1  # Find files with hard links
+      # Set the correct file permissions for the dist folder and its contents
+      - name: Set file permissions for dist folder
+        run: chmod -R a+rX ./dist
 
       # Optional: Remove any symlinks from dist before uploading
       - name: Remove symlinks (if any)
