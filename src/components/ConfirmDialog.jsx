@@ -75,15 +75,53 @@ const Panel = ({ block, onClose, success, setSuccess }) => {
 
   const title = `${details ? details : block.summary}${name && ` w/ ${name}`}`;
 
+  const handleDownloadICS = (searchParams) => {
+    const event = new Proxy(new URLSearchParams(searchParams), {
+      get: (searchParams, prop) => searchParams.get(prop),
+    });
+  
+    // Format dates for iCalendar (YYYYMMDDTHHMMSSZ)
+    const formatDate = (date) => date.replace(/[-:]/g, "").split(".")[0] + "Z";
+
+    const icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//${new URL(window.location.origin).hostname.replace("localhost", "hmbg.dev")}//NONSGML v1.0//EN
+CALSCALE:GREGORIAN
+BEGIN:VEVENT
+UID:${Date.now()}@${new URL(window.location.origin).hostname.replace("localhost", "hmbg.dev")}
+DTSTAMP:${formatDate(new Date().toISOString())}
+DTSTART:${formatDate(event.start)}
+DTEND:${formatDate(event.end)}
+SUMMARY:${event.title}
+DESCRIPTION:${event.description || "N/A"}
+LOCATION:${event.location || "N/A"}
+STATUS:CONFIRMED
+SEQUENCE:0
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR`;
+
+    // Create a Blob and download it
+    const blob = new Blob([icsContent], { type: "text/calendar" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "event.ics";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   const createEvent = () => {
     localStorage.setItem("name", name);
     const searchParams = new URLSearchParams({
       title,
       location,
-      start: formatISO(getDate(block.date, time)),
+      start: getDate(block.date, time).toISOString(),
       end: isBefore(getDate(block.date, time), block.endDate)
-        ? formatISO(block.endDate)
-        : formatISO(addHours(getDate(block.date, time), 1)),
+        ? block.endDate.toISOString()
+        : addHours(getDate(block.date, time), 1).toISOString(),
     });
     if (config.api) {
       fetch(config.api + "?" + searchParams.toString())
@@ -104,8 +142,9 @@ const Panel = ({ block, onClose, success, setSuccess }) => {
           );
           setSuccess([
             "booked",
-            window.location.href + "?" + searchParams.toString(),
+            window.location.pathname,
           ]);
+          handleDownloadICS(searchParams);
         })
         .catch((error) => setSuccess([false, error.message]));
     } else {
@@ -353,11 +392,9 @@ const Booked = ({ url }) => {
       <div className="flex flex-col items-center gap-2 justify-center text-center">
         <div className="text-xl text-green-400 font-bold">Booking Complete</div>
         <div className="text-slate-300">
-          This event has been booked on
+          You&rsquo;re booked on
           <br />
           {config.name}'s calendar.
-          <br />
-          You may close this window now.
         </div>
       </div>
       <div className="flex items-center justify-between flex-wrap">
@@ -365,7 +402,7 @@ const Booked = ({ url }) => {
           className="py-2 px-3 text-center text-slate-100 w-full rounded-md border-2 border-slate-600 hover:bg-slate-600 font-semibold tracking-wider uppercase"
           href={url}
         >
-          Add to your Calendar
+          Close
         </a>
       </div>
     </>
