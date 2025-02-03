@@ -85,10 +85,10 @@ const Panel = ({ block, onClose, success, setSuccess }) => {
 
     const icsContent = `BEGIN:VCALENDAR
 VERSION:2.0
-PRODID:-//${new URL(window.location.origin).hostname.replace("localhost", "hmbg.dev")}//NONSGML v1.0//EN
+PRODID:-//${new URL(window.location.origin).hostname}//NONSGML v1.0//EN
 CALSCALE:GREGORIAN
 BEGIN:VEVENT
-UID:${Date.now()}@${new URL(window.location.origin).hostname.replace("localhost", "hmbg.dev")}
+UID:${Date.now()}@${new URL(window.location.origin).hostname}
 DTSTAMP:${formatDate(new Date().toISOString())}
 DTSTART:${formatDate(event.start)}
 DTEND:${formatDate(event.end)}
