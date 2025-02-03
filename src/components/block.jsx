@@ -180,7 +180,7 @@ const BlockHeadings = ({ prevDate, date, blocks, scrolls }) => {
                   )}
                   <div className="text-right">
                     {format(e.date, "h:mmaaa")}{" "}
-                    <span className="text-yellow-100">
+                    <span className="text-yellow-100 line-through">
                       ({e.blocks.join(", ")})
                     </span>
                   </div>
