@@ -39,8 +39,8 @@ jobs:
         run: npm install
       - name: Build
         run: npm run build
-      - name: Remove symlinks (if any)
-        run: find ./dist -type l -exec rm -f {} \;
+      - name: List hard links
+        run: ls -li ./dist
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact
