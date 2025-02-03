@@ -53,8 +53,7 @@ const BlockSection = ({
                     blocks={blocks}
                     scrolls={scrolls}
                   />
-                  {(!block.overlaps.length ||
-                    window.location.search.includes(config.pass)) && (
+                  {(!block.overlaps.length) && (
                     <RadioGroup.Option
                       value={block}
                       disabled={!!block.overlaps.length}
@@ -148,7 +147,7 @@ const BlockHeadings = ({ prevDate, date, blocks, scrolls }) => {
             {format(date, "EEEE, LLL do")}
           </div>
         </div>
-        {!!events.length && window.location.search.includes(config.pass) && (
+        {!!events.length && (
           <div className="bg-yellow-500/10 rounded-lg flex flex-col p-3 gap-3">
             <div className="text-lg font-bold flex items-center gap-2">
               <svg
