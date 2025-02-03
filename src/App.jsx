@@ -156,7 +156,8 @@ const useBlocks = (data, plansData, topics) => {
     plansData
       .flatMap((p) => Object.values(p))
       .filter((event) => (event.type = "VEVENT"))
-      .filter((event) => event.end - event.start < dayInMs)
+      //Filter to just <1 day long events, exception for all day events in all caps on the public cal
+      .filter((event) => event.end - event.start < dayInMs || /^[A-Z\s]+$/.test(event.summary)) 
       .forEach((event) => {
         if (event.recurrences) {
           Object.entries(event.recurrences).forEach((val) => {
@@ -182,6 +183,7 @@ const useBlocks = (data, plansData, topics) => {
           });
         }
       });
+
     return blocks.map((b) => {
       const overlaps = planBlocks.filter((p) =>
         areIntervalsOverlapping(
@@ -199,6 +201,7 @@ const useBlocks = (data, plansData, topics) => {
       return b;
     });
   }, [data, plansData]);
+
 
   const filteredBlocks = useMemo(() => {
     if (!blocks.length) return [];
