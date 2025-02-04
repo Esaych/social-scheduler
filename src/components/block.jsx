@@ -174,12 +174,13 @@ const BlockHeadings = ({ prevDate, date, blocks, scrolls }) => {
                       Private Event
                     </div>
                   ) : (
-                    <div className="flex-1 whitespace-nowrap font-medium">
+                    <div className="flex-1 font-medium">
                       {e.name}
                     </div>
                   )}
                   <div className="text-right">
                     {format(e.date, "h:mmaaa")}{" "}
+                    <br />
                     <span className="text-yellow-100 line-through">
                       ({e.blocks.join(", ")})
                     </span>
